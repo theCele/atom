@@ -10,5 +10,5 @@ This package works only in Electron.js environment
 # Install dependency - reflect-metadata
 npm install --save reflect-metadata
 # install atom
-npm install --save atom
+npm install --save github:thecele/atom
 ```

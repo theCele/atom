@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "description": "Electron architectual helpers",
   "scripts": {
-    "build": "tsc",
+    "clean": "rd \"./dist\" /S /Q",
+    "build": "npm run clean && tsc",
     "watch": "tsc -w",
     "lint": "tslint -c tslint.json -p tsconfig.json",
-    "start": "npm run build && electron ./dist/test/main.js"
+    "start": "npm run build && electron ./dist/test/main.js",
+    "publish:git": "npm run build && git add . && git commit -m 'update' && git push origin master"
   },
   "repository": "https://github.com/atom",
   "keywords": [
