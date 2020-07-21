@@ -1,26 +1,22 @@
 {
-  "name": "electron-quick-start-typescript",
+  "name": "atom",
   "version": "1.0.0",
-  "description": "A minimal Electron application written with Typescript",
+  "description": "Electron architectual helpers",
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
     "lint": "tslint -c tslint.json -p tsconfig.json",
-    "start": "npm run build && electron ./dist/main.js"
+    "start": "npm run build && electron ./dist/test/main.js"
   },
-  "repository": "https://github.com/electron/electron-quick-start-typescript",
+  "repository": "https://github.com/atom",
   "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo",
-    "typescript"
+    "atom"
   ],
-  "author": "GitHub",
+  "author": "Cvetko Stavreski",
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^9.0.4",
+    "reflect-metadata": "^0.1.13",
     "tslint": "^6.1.2",
     "typescript": "^3.9.5"
   }
