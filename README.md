@@ -2,7 +2,7 @@
 
 # A progressive Electron Main Process framework
 
-## To Use
+## Install
 
 This package works only in Electron.js environment
 
@@ -11,4 +11,16 @@ This package works only in Electron.js environment
 npm install --save reflect-metadata
 # install atom
 npm install --save github:thecele/atom
+```
+
+## How To
+```bash
+# Module Decorators - class
+@Moduel({ controllers?: any[], children?: any[] })
+
+# Controller Decorators - class
+@Controller()
+
+# Controller Decorators - method
+@Ipc(channel?: string)
 ```
