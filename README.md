@@ -24,3 +24,27 @@ npm install --save github:thecele/atom
 # Controller Decorators - method
 @Ipc(channel?: string)
 ```
+
+File Structure
+
+    .
+    ├── dist                                        # Compiled files
+    ├── src                                         # Source files
+    │   ├── main                                    # Main process
+    │   │   ├── app                                 # Business logic
+    │   │   │   ├── app.controller.ts               # Main controller (optional)
+    │   │   │   ├── app.module.ts                   # Main module 
+    │   │   │   ├── main.ts                         # Start file
+    │   │   │   └── example                         # Module Example
+    │   │   │       ├── example.controller.ts       # Module Example - controller (optional)
+    │   │   │       └── example.module.ts           # Module Example - module
+    │   │   ├── data                                # Data management (database and file manager)
+    │   │   │   ├── file-manager.ts                 # 
+    │   │   │   └── file-manager.utility.ts         # 
+    │   │   └── models
+    │   │
+    │   ├── renderer                                # 
+    │   └── modules                                 # 
+    |           ├── main                            # 
+    |           └── renderer                        # 
+    └── ...
