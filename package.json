@@ -2,6 +2,8 @@
   "name": "atom",
   "version": "1.0.0",
   "description": "Electron architectual helpers",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "clean": "rd \"./dist\" /S /Q",
     "build": "npm run clean && tsc",
