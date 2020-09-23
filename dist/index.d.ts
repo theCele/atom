@@ -1,2 +1,2 @@
-export { Controller, Ipc } from './lib/controller.decorator';
-export { Module } from './lib/module.decorator';
+export { Controller, IpcServer, Module } from './lib/electron-main.decorator';
+export { IpcClient } from './lib/electron-renderer.decorator';
