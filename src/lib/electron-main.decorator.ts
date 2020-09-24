@@ -52,15 +52,17 @@ export const Controller = () => {
  */
 export const IpcServer = () => {
     return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
-        const name = (target.constructor.name as string);
-        const listeningChannel = (`ipc_${name}_${propertyKey}`).toUpperCase();
-        
         if (ipcMain) {
+            const name = (target.constructor.name as string);
+            const listeningChannel = (`ipc_${name}_${propertyKey}`).toUpperCase();
+            
             const e = events.find(c => c === listeningChannel);
             if (!e) events.push(listeningChannel)
             else throw new Error(`duplicate event name at controller ${name} and method ${propertyKey}`);
+            
             ipcMain.removeHandler(listeningChannel);
             ipcMain.handle(listeningChannel, (event: Electron.IpcMainEvent | undefined, ...args: any) => {
+                console.log(descriptor.value);
                 let controller = controllers.find(c => c.constructor.name === target.constructor.name);
                 if (!controller) throw new Error(`controller ${name} and method ${propertyKey} does not exist`);
                 return controller[propertyKey](...args);
