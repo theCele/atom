@@ -37,8 +37,6 @@ export function Module(options?: IModuleOptions) {
  */
 export const Controller = () => {
     return <T extends {new(...args:any[]):{}}>(constructor:T) => {
-        console.log('COntroller arguments');
-        console.log(constructor);
         const name: string | undefined = (constructor) ? constructor.name : undefined;
         let c = controllersSignitures.find(c => c.name === name);
         if (!c) controllersSignitures.push(constructor)
@@ -64,7 +62,6 @@ export const IpcServer = () => {
             
             ipcMain.removeHandler(listeningChannel);
             ipcMain.handle(listeningChannel, (event: Electron.IpcMainEvent | undefined, ...args: any) => {
-                console.log(descriptor.value);
                 let controller = controllers.find(c => c.constructor.name === target.constructor.name);
                 if (!controller) throw new Error(`controller ${name} and method ${propertyKey} does not exist`);
                 return controller[propertyKey](...args);

@@ -37,8 +37,6 @@ exports.Module = Module;
  */
 exports.Controller = () => {
     return (constructor) => {
-        console.log('COntroller arguments');
-        console.log(constructor);
         const name = (constructor) ? constructor.name : undefined;
         let c = controllersSignitures.find(c => c.name === name);
         if (!c)
@@ -64,7 +62,6 @@ exports.IpcServer = () => {
                 throw new Error(`duplicate event name at controller ${name} and method ${propertyKey}`);
             electron_1.ipcMain.removeHandler(listeningChannel);
             electron_1.ipcMain.handle(listeningChannel, (event, ...args) => {
-                console.log(descriptor.value);
                 let controller = controllers.find(c => c.constructor.name === target.constructor.name);
                 if (!controller)
                     throw new Error(`controller ${name} and method ${propertyKey} does not exist`);
