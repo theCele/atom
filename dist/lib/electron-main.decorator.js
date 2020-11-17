@@ -37,12 +37,14 @@ exports.Module = Module;
  */
 exports.Controller = () => {
     return (constructor) => {
+        console.log('COntroller arguments');
+        console.log(constructor);
         const name = (constructor) ? constructor.name : undefined;
         let c = controllersSignitures.find(c => c.name === name);
         if (!c)
             controllersSignitures.push(constructor);
         else
-            throw new Error('Duplicate controller name');
+            throw new Error(`Duplicate controller name ${name}`);
     };
 };
 /**

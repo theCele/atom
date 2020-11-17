@@ -37,10 +37,12 @@ export function Module(options?: IModuleOptions) {
  */
 export const Controller = () => {
     return <T extends {new(...args:any[]):{}}>(constructor:T) => {
+        console.log('COntroller arguments');
+        console.log(constructor);
         const name: string | undefined = (constructor) ? constructor.name : undefined;
         let c = controllersSignitures.find(c => c.name === name);
         if (!c) controllersSignitures.push(constructor)
-        else throw new Error('Duplicate controller name');
+        else throw new Error(`Duplicate controller name ${name}`);
     }
 }
 

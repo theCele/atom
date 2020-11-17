@@ -1,5 +1,10 @@
 import 'reflect-metadata';
-import { ipcMain, ipcRenderer } from "electron";
+let ipcRenderer: any = undefined;
+try {
+    ipcRenderer = require("electron").ipcRenderer;
+} catch (err) {
+    ipcRenderer = (window as any).ipcRenderer;
+}
 
 /**
  * IpcPost - Mehtod Decorator adds last argument with promise result of the controller
@@ -12,12 +17,10 @@ export function IpcClient(controllerName: string, methodName: string) {
             const listeningChannel = (`ipc_${controllerName}_${methodName}`).toUpperCase();
             const method = descriptor.value;
             descriptor.value = function(...args: any) {
-                return method.apply(this, [...args, ipcRenderer?.invoke(listeningChannel, ...args)]);
+                return method.apply(this, [...args, ipcRenderer.invoke(listeningChannel, ...args)]);
             }
-        } else if (ipcMain) {
-            throw new Error(`use this decorator only in electron renderer`);
         } else {
-            throw new Error(`decorators must be in electron enviroment`);
+            throw new Error(`decorators must be in electron renderer enviroment`);
         }
     }
 }

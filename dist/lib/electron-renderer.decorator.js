@@ -2,7 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.IpcClient = void 0;
 require("reflect-metadata");
-const electron_1 = require("electron");
+let ipcRenderer = undefined;
+try {
+    ipcRenderer = require("electron").ipcRenderer;
+}
+catch (err) {
+    ipcRenderer = window.ipcRenderer;
+}
 /**
  * IpcPost - Mehtod Decorator adds last argument with promise result of the controller
  * @param controllerName controller name located in electron main
@@ -10,18 +16,15 @@ const electron_1 = require("electron");
  */
 function IpcClient(controllerName, methodName) {
     return function (target, propertyKey, descriptor) {
-        if (electron_1.ipcRenderer) {
+        if (ipcRenderer) {
             const listeningChannel = (`ipc_${controllerName}_${methodName}`).toUpperCase();
             const method = descriptor.value;
             descriptor.value = function (...args) {
-                return method.apply(this, [...args, electron_1.ipcRenderer?.invoke(listeningChannel, ...args)]);
+                return method.apply(this, [...args, ipcRenderer.invoke(listeningChannel, ...args)]);
             };
         }
-        else if (electron_1.ipcMain) {
-            throw new Error(`use this decorator only in electron renderer`);
-        }
         else {
-            throw new Error(`decorators must be in electron enviroment`);
+            throw new Error(`decorators must be in electron renderer enviroment`);
         }
     };
 }

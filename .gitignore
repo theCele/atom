@@ -1,4 +1,4 @@
 node_modules
 src/test
-/index.html
+index.html
 dist/test
