@@ -2,7 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.IpcServer = exports.Controller = exports.Module = void 0;
 require("reflect-metadata");
-const electron_1 = require("electron");
+let ipcMain;
+let ipcRenderer;
+try {
+    ipcMain = require('electron').ipcMain;
+    ipcRenderer = require('electron').ipcRenderer;
+}
+catch (err) { }
 const controllersSignitures = [];
 const controllers = [];
 const events = [];
@@ -52,7 +58,7 @@ exports.Controller = () => {
  */
 exports.IpcServer = () => {
     return (target, propertyKey, descriptor) => {
-        if (electron_1.ipcMain) {
+        if (ipcMain) {
             const name = target.constructor.name;
             const listeningChannel = (`ipc_${name}_${propertyKey}`).toUpperCase();
             const e = events.find(c => c === listeningChannel);
@@ -60,15 +66,15 @@ exports.IpcServer = () => {
                 events.push(listeningChannel);
             else
                 throw new Error(`duplicate event name at controller ${name} and method ${propertyKey}`);
-            electron_1.ipcMain.removeHandler(listeningChannel);
-            electron_1.ipcMain.handle(listeningChannel, (event, ...args) => {
+            ipcMain.removeHandler(listeningChannel);
+            ipcMain.handle(listeningChannel, (event, ...args) => {
                 let controller = controllers.find(c => c.constructor.name === target.constructor.name);
                 if (!controller)
                     throw new Error(`controller ${name} and method ${propertyKey} does not exist`);
                 return controller[propertyKey](...args);
             });
         }
-        else if (electron_1.ipcRenderer) {
+        else if (ipcRenderer) {
             throw new Error(`use this decorator only in electron main`);
         }
         else {

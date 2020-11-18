@@ -1,10 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BrowserWindow = void 0;
-const path = require("path");
-const electron_1 = require("electron");
+let path;
+let BW;
+try {
+    BW = require('electron').BrowserWindow;
+    path = require('path');
+}
+catch (err) { }
+let BrowserWindowConstructorOptions;
 const _window_repository = [];
-class BrowserWindow extends electron_1.BrowserWindow {
+class BrowserWindow extends BW {
     constructor(options) {
         super(options);
     }

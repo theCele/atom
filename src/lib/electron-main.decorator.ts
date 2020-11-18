@@ -1,5 +1,11 @@
 import 'reflect-metadata';
-import { ipcMain, ipcRenderer } from 'electron';
+
+let ipcMain: any;
+let ipcRenderer: any;
+try {
+    ipcMain = require('electron').ipcMain;
+    ipcRenderer = require('electron').ipcRenderer;
+} catch (err) { }
 
 const controllersSignitures: any[] = [];
 const controllers: any[] = [];

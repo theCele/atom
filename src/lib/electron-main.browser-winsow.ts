@@ -1,5 +1,11 @@
-import * as path from 'path';
-import { BrowserWindow as BW, BrowserWindowConstructorOptions } from 'electron';
+let path: any;
+let BW;
+try {
+    BW = require('electron').BrowserWindow;
+    path = require('path')
+} catch (err) {}
+import { BrowserWindowConstructorOptions } from 'electron';
+let BrowserWindowConstructorOptions
 const _window_repository: BrowserWindow[] = [];
 
 export class BrowserWindow extends BW {
