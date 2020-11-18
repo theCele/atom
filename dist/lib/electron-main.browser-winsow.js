@@ -1,16 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BrowserWindow = void 0;
-let path;
-let BW;
-try {
-    BW = require('electron').BrowserWindow;
-    path = require('path');
-}
-catch (err) { }
+const path = require("path");
+const electron_1 = require("electron");
 let BrowserWindowConstructorOptions;
 const _window_repository = [];
-class BrowserWindow extends BW {
+class BrowserWindow extends electron_1.BrowserWindow {
     constructor(options) {
         super(options);
     }
@@ -20,31 +15,16 @@ class BrowserWindow extends BW {
         if (options && options.webPreferences && options.webPreferences.nodeIntegration)
             nodeIntegration = true;
         if (!nodeIntegration) {
-            if (options) {
-                if (options.webPreferences) {
-                    if (options.webPreferences) {
-                        options.webPreferences.contextIsolation = true;
-                        options.webPreferences.preload = path.join(__dirname, 'preload.js');
-                    }
-                    else {
-                        options.webPreferences = {
-                            contextIsolation: true,
-                            preload: path.join(__dirname, 'preload.js')
-                        };
-                    }
+            const preloadOptions = {
+                webPreferences: {
+                    contextIsolation: true,
+                    preload: path.join(__dirname, 'preload.js')
                 }
-            }
-            else {
-                options = {
-                    webPreferences: {
-                        contextIsolation: true,
-                        preload: path.join(__dirname, 'preload.js')
-                    }
-                };
-            }
+            };
+            options = { ...options, ...preloadOptions };
         }
         else {
-            console.warn('nodeIntegration is enebled. If you want to use preloader please disable node integration');
+            console.warn('nodeIntegration is enabled. If you want to use IpcClient please disable node integration');
         }
         _window_repository.push(new BrowserWindow(options));
         let win = _window_repository[_window_repository.length - 1];
