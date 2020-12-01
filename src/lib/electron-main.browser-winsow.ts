@@ -3,12 +3,17 @@ import { BrowserWindow as BW, BrowserWindowConstructorOptions } from 'electron';
 let BrowserWindowConstructorOptions;
 const _window_repository: BrowserWindow[] = [];
 
+export interface IBrowserWindowConstructorOptions extends BrowserWindowConstructorOptions {
+    url?: string;
+    file?: string;
+}
+
 export class BrowserWindow extends BW {
-    constructor(options?: BrowserWindowConstructorOptions) {
+    constructor(options?: IBrowserWindowConstructorOptions) {
         super(options);   
     }
 
-    public static create(options?: BrowserWindowConstructorOptions) {
+    public static create(options?: IBrowserWindowConstructorOptions) {
         // check if node integration is enabled
         let nodeIntegration = false;
         if (options && options.webPreferences && options.webPreferences.nodeIntegration) nodeIntegration = true;
@@ -25,7 +30,7 @@ export class BrowserWindow extends BW {
         }
 
         _window_repository.push(new BrowserWindow(options));
-        let win = _window_repository[_window_repository.length - 1]
+        let win = _window_repository[_window_repository.length - 1];
         win.on('close', () => {
             if (win) {
                 const index = _window_repository.findIndex(c => {
@@ -41,6 +46,8 @@ export class BrowserWindow extends BW {
                 }
             }
         });
+        if (options.url) { win.loadURL(options.url) }
+        else if (options.file) { win.loadFile(options.file) };
         return _window_repository[_window_repository.length - 1];
     }
 

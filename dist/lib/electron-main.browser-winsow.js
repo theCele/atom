@@ -44,6 +44,13 @@ class BrowserWindow extends electron_1.BrowserWindow {
                 }
             }
         });
+        if (options.url) {
+            win.loadURL(options.url);
+        }
+        else if (options.file) {
+            win.loadFile(options.file);
+        }
+        ;
         return _window_repository[_window_repository.length - 1];
     }
     static getAll() {
