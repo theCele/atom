@@ -8,6 +8,8 @@ class IpcClient {
     static get ipc() {
         try {
             this._ipc = require("electron").ipcRenderer;
+            if (!this._ipc)
+                throw new Error('undefined');
         }
         catch (err) {
             this._ipc = window.ipcRenderer;

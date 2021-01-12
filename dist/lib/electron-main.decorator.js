@@ -3,8 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.IpcServer = exports.Controller = exports.Module = void 0;
 require("reflect-metadata");
 const electron_1 = require("electron");
-const controllersSignitures = [];
+const controllersSignature = [];
 const controllers = [];
+const injectablesSignature = [];
+const injectables = [];
 const events = [];
 /**
  * Module - Class Decorator
@@ -38,9 +40,22 @@ exports.Module = Module;
 exports.Controller = () => {
     return (constructor) => {
         const name = (constructor) ? constructor.name : undefined;
-        let c = controllersSignitures.find(c => c.name === name);
+        let c = controllersSignature.find(c => c.name === name);
         if (!c)
-            controllersSignitures.push(constructor);
+            controllersSignature.push(constructor);
+        else
+            throw new Error(`Duplicate controller name ${name}`);
+    };
+};
+/**
+ * Injectable - Class decorator
+ */
+const Injectable = () => {
+    return (constructor) => {
+        const name = (constructor) ? constructor.name : undefined;
+        let c = injectablesSignature.find(c => c.name === name);
+        if (!c)
+            injectablesSignature.push(constructor);
         else
             throw new Error(`Duplicate controller name ${name}`);
     };
@@ -65,7 +80,7 @@ exports.IpcServer = () => {
                 let controller = controllers.find(c => c.constructor.name === target.constructor.name);
                 if (!controller)
                     throw new Error(`controller ${name} and method ${propertyKey} does not exist`);
-                return controller[propertyKey](...args);
+                return controller[propertyKey](...args, event);
             });
         }
         else if (electron_1.ipcRenderer) {

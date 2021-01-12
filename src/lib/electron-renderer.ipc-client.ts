@@ -9,6 +9,7 @@ export class IpcClient {
     private static get ipc() : IIpcRenderer {
         try {
             this._ipc = require("electron").ipcRenderer as any;
+            if (!this._ipc) throw new Error('undefined');
         } catch (err) {
             this._ipc = (window as any).ipcRenderer;
         }

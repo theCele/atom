@@ -1,8 +1,10 @@
 import 'reflect-metadata';
 import { ipcMain, ipcRenderer } from 'electron';
 
-const controllersSignitures: any[] = [];
+const controllersSignature: any[] = [];
 const controllers: any[] = [];
+const injectablesSignature: any[] = [];
+const injectables: any[] = [];
 const events: string[] = [];
 
 interface IModuleOptions {
@@ -38,8 +40,20 @@ export function Module(options?: IModuleOptions) {
 export const Controller = () => {
     return <T extends {new(...args:any[]):{}}>(constructor:T) => {
         const name: string | undefined = (constructor) ? constructor.name : undefined;
-        let c = controllersSignitures.find(c => c.name === name);
-        if (!c) controllersSignitures.push(constructor)
+        let c = controllersSignature.find(c => c.name === name);
+        if (!c) controllersSignature.push(constructor)
+        else throw new Error(`Duplicate controller name ${name}`);
+    }
+}
+
+/**
+ * Injectable - Class decorator
+ */
+const Injectable = () => {
+    return <T extends {new(...args:any[]):{}}>(constructor:T) => {
+        const name: string | undefined = (constructor) ? constructor.name : undefined;
+        let c = injectablesSignature.find(c => c.name === name);
+        if (!c) injectablesSignature.push(constructor)
         else throw new Error(`Duplicate controller name ${name}`);
     }
 }
@@ -64,7 +78,7 @@ export const IpcServer = () => {
             ipcMain.handle(listeningChannel, (event: Electron.IpcMainEvent | undefined, ...args: any) => {
                 let controller = controllers.find(c => c.constructor.name === target.constructor.name);
                 if (!controller) throw new Error(`controller ${name} and method ${propertyKey} does not exist`);
-                return controller[propertyKey](...args);
+                return controller[propertyKey](...args, event);
             });
         } else if (ipcRenderer) {
             throw new Error(`use this decorator only in electron main`);
