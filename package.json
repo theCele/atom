@@ -1,6 +1,6 @@
 {
   "name": "atom",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Electron architectual helpers",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -19,9 +19,15 @@
   "author": "Cvetko Stavreski",
   "license": "CC0-1.0",
   "devDependencies": {
+    "@types/bull": "^3.14.4",
     "electron": "^9.0.4",
     "reflect-metadata": "^0.1.13",
     "tslint": "^6.1.2",
     "typescript": "^3.9.5"
+  },
+  "dependencies": {
+    "@types/uniqid": "^5.2.0",
+    "redis": "^3.0.2",
+    "uniqid": "^5.2.0"
   }
 }

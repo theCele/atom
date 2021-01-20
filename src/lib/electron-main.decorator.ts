@@ -80,6 +80,22 @@ export const IpcServer = () => {
                 if (!controller) throw new Error(`controller ${name} and method ${propertyKey} does not exist`);
                 return controller[propertyKey](...args, event);
             });
+
+            ipcMain.removeAllListeners(listeningChannel);
+            ipcMain.on(listeningChannel, (event: Electron.IpcMainEvent | undefined | string, ...args) => {
+                if (event && typeof event === 'string' && (event as string).indexOf('__RETURN')) {
+                    let controller = controllers.find(c => c.constructor.name === target.constructor.name);
+                    if (!controller) throw new Error(`controller ${name} and method ${propertyKey} does not exist`);
+                    const result = controller[propertyKey](...args, event);
+                    if (result.then) {
+                        result
+                        .then((r: any) => ipcMain.emit(event, r))
+                        .catch((err: any) => ipcMain.emit(`${event}_ERROR`, err));
+                    } else {
+                        ipcMain.emit(event, result);
+                    }
+                }
+            });
         } else if (ipcRenderer) {
             throw new Error(`use this decorator only in electron main`);
         } else {

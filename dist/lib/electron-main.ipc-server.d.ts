@@ -1,11 +1,9 @@
 /**
  * Static ipc client
  */
-export declare class IpcClient {
+export declare class IpcServer {
     private static _ipc;
     private static get ipc();
-    private static _dialog;
-    private static get dialog();
     /**
      * Invoke controler method in main
      * T: expected return

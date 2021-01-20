@@ -16,6 +16,18 @@ export class IpcClient {
         return this._ipc;
     }
 
+    private static _dialog: any;
+    private static get dialog() : any {
+        try {
+            this._dialog = require("electron").dialog as any;
+            if (!this._dialog) throw new Error('undefined');
+        } catch (err) {
+            this._dialog = (window as any).electronDialog;
+        }
+        return this._dialog;
+    }
+    
+
     /**
      * Invoke controler method in main
      * T: expected return
@@ -26,9 +38,18 @@ export class IpcClient {
     public static invoke<T>(controllerName: string, methodName: string, ...args: any): Promise<T> {
         return new Promise((resolve, reject) => {
             let listeningChannel = (`ipc_${controllerName}_${methodName}`).toUpperCase();
+            window.onbeforeunload = (e: any) => {
+                e.returnValue = false;
+            };
             this.ipc.invoke(listeningChannel, ...args)
-            .then(r => resolve(r))
-            .catch(err => reject(err));
+            .then(r => {
+                window.onbeforeunload = undefined;
+                resolve(r);
+            })
+            .catch(err => {
+                window.onbeforeunload = undefined;
+                reject(err)
+            });
         });
     }
 }

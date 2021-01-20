@@ -64,4 +64,4 @@ class BrowserWindow extends electron_1.BrowserWindow {
     }
 }
 exports.BrowserWindow = BrowserWindow;
-//# sourceMappingURL=electron-main.browser-winsow.js.map
+//# sourceMappingURL=electron-main.browser-window.js.map
