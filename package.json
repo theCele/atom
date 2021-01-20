@@ -20,7 +20,7 @@
   "license": "CC0-1.0",
   "devDependencies": {
     "@types/bull": "^3.14.4",
-    "electron": "^9.0.4",
+    "electron": "^9.3.1",
     "reflect-metadata": "^0.1.13",
     "tslint": "^6.1.2",
     "typescript": "^3.9.5"
