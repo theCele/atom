@@ -38,16 +38,20 @@ export class IpcClient {
     public static invoke<T>(controllerName: string, methodName: string, ...args: any): Promise<T> {
         return new Promise((resolve, reject) => {
             let listeningChannel = (`ipc_${controllerName}_${methodName}`).toUpperCase();
-            window.onbeforeunload = (e: any) => {
-                e.returnValue = false;
-            };
+            // window.addEventListener("beforeunload", (e: any) => {
+            //     e.returnValue = false;
+            // });
             this.ipc.invoke(listeningChannel, ...args)
             .then(r => {
-                window.onbeforeunload = undefined;
+                // window.addEventListener("beforeunload", (e: any) => {
+                //     e.returnValue = 'true';
+                // });
                 resolve(r);
             })
             .catch(err => {
-                window.onbeforeunload = undefined;
+                // window.addEventListener("beforeunload", (e: any) => {
+                //     e.returnValue = true;
+                // });
                 reject(err)
             });
         });
