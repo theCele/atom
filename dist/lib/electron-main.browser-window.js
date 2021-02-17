@@ -3,10 +3,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BrowserWindow = void 0;
 const path = require("path");
 const electron_1 = require("electron");
+const electron_main_electron_instance_1 = require("./electron-main.electron-instance");
 let BrowserWindowConstructorOptions;
 const _window_repository = [];
 class BrowserWindow extends electron_1.BrowserWindow {
     constructor(options) {
+        const dto = electron_main_electron_instance_1.ElectronInstance.getDto();
+        if (dto && dto.window)
+            options = { ...options, ...dto.window };
         super(options);
     }
     static create(options) {
@@ -44,8 +48,8 @@ class BrowserWindow extends electron_1.BrowserWindow {
                 }
             }
         });
-        if (options.url) {
-            win.loadURL(options.url);
+        if (options.url || (electron_main_electron_instance_1.ElectronInstance.getDto() && electron_main_electron_instance_1.ElectronInstance.getDto().window && electron_main_electron_instance_1.ElectronInstance.getDto().window.url)) {
+            win.loadURL((electron_main_electron_instance_1.ElectronInstance.getDto() && electron_main_electron_instance_1.ElectronInstance.getDto().window && electron_main_electron_instance_1.ElectronInstance.getDto().window.url) ? electron_main_electron_instance_1.ElectronInstance.getDto().window.url : options.url);
         }
         else if (options.file) {
             win.loadFile(options.file);

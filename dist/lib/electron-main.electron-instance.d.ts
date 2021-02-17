@@ -6,6 +6,17 @@ export declare class ElectronInstance {
     static create<T>(dto?: {
         data?: T;
         window?: IBrowserWindowConstructorOptions;
+        auth?: {
+            user: string;
+            password: string;
+        };
     }): ChildProcess;
-    static getDto<T>(): T | undefined;
+    static getDto<T>(): {
+        data?: T;
+        window?: IBrowserWindowConstructorOptions;
+        auth?: {
+            user: string;
+            password: string;
+        };
+    } | undefined;
 }

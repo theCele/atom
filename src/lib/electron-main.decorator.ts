@@ -59,6 +59,8 @@ const Injectable = () => {
 }
 
 
+const ipcMainEventMetadataKey = Symbol("required");
+
 /**
  * IPC SERVER - Method Decorator
  * Make method available in renderer
@@ -73,12 +75,24 @@ export const IpcServer = () => {
             const e = events.find(c => c === listeningChannel);
             if (!e) events.push(listeningChannel)
             else throw new Error(`duplicate event name at controller ${name} and method ${propertyKey}`);
+
+            let ipcMainEventParameters: number[] = Reflect.getOwnMetadata(
+                ipcMainEventMetadataKey,
+                target,
+                propertyKey
+            );
+
+            let ipcMainEventParametersIndex: number | undefined = undefined;
+            if (ipcMainEventParameters && ipcMainEventParameters.length > 0) {
+                ipcMainEventParametersIndex = ipcMainEventParameters[0];
+            }
             
             ipcMain.removeHandler(listeningChannel);
             ipcMain.handle(listeningChannel, (event: Electron.IpcMainEvent | undefined, ...args: any) => {
                 let controller = controllers.find(c => c.constructor.name === target.constructor.name);
+                if (ipcMainEventParametersIndex) args[ipcMainEventParametersIndex] = event;
                 if (!controller) throw new Error(`controller ${name} and method ${propertyKey} does not exist`);
-                return controller[propertyKey](...args, event);
+                return controller[propertyKey](...args);
             });
 
             ipcMain.removeAllListeners(listeningChannel);
@@ -101,5 +115,23 @@ export const IpcServer = () => {
         } else {
             throw new Error(`decorators must be in electron enviroment`);
         }
+    }
+}
+
+/**
+ * Parameter Decorator for IpcMainEvent
+ * Works only if used with IpcServer decorator
+ */
+export const IpcMainEvent = () => {
+    return (target: Object, propertyKey: string | symbol, parameterIndex: number) => {
+        let existingRequiredParameters: number[] =
+            Reflect.getOwnMetadata(ipcMainEventMetadataKey, target, propertyKey) || [];
+        existingRequiredParameters.push(parameterIndex);
+        Reflect.defineMetadata(
+            ipcMainEventMetadataKey,
+            existingRequiredParameters,
+            target,
+            propertyKey
+        );
     }
 }

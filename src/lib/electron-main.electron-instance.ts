@@ -3,7 +3,7 @@ import { IBrowserWindowConstructorOptions } from './electron-main.browser-window
 
 export class ElectronInstance {
     private static arg: any[] = [];
-    static create<T>(dto?: { data?: T, window?: IBrowserWindowConstructorOptions }): ChildProcess {
+    static create<T>(dto?: { data?: T, window?: IBrowserWindowConstructorOptions, auth?: { user: string, password: string } }): ChildProcess {
         this.arg = process.argv;
         const appPath: string = this.arg[0];
         const scriptPath: string = this.arg[1] ? this.arg[1] : '';
@@ -28,10 +28,10 @@ export class ElectronInstance {
         });
         return cp;
     }
-    static getDto<T>(): T | undefined {
-        let dto: T | undefined = undefined;
+    static getDto<T>(): { data?: T, window?: IBrowserWindowConstructorOptions, auth?: { user: string, password: string } } | undefined {
+        let dto: { data?: T, window?: IBrowserWindowConstructorOptions, auth?: { user: string, password: string } } | undefined = undefined;
         try {
-            dto = JSON.parse((process.env.DTO as any).data);
+            dto = JSON.parse((process.env.DTO as any));
         } catch (err) { }
         return dto;
     }

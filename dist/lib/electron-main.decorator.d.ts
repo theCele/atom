@@ -24,4 +24,9 @@ export declare const Controller: () => <T extends new (...args: any[]) => {}>(co
  * @param channel (optional) listening channel - {classname}:{methodname}::{channel}
  */
 export declare const IpcServer: () => (target: any, propertyKey: string, descriptor: PropertyDescriptor) => void;
+/**
+ * Parameter Decorator for IpcMainEvent
+ * Works only if used with IpcServer decorator
+ */
+export declare const IpcMainEvent: () => (target: Object, propertyKey: string | symbol, parameterIndex: number) => void;
 export {};

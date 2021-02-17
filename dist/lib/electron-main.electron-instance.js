@@ -29,7 +29,7 @@ class ElectronInstance {
     static getDto() {
         let dto = undefined;
         try {
-            dto = JSON.parse(process.env.DTO.data);
+            dto = JSON.parse(process.env.DTO);
         }
         catch (err) { }
         return dto;

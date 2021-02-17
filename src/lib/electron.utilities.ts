@@ -8,15 +8,7 @@ export const isMain = (): boolean => {
     } catch (err) {
         return false;
     }
-};
-
-export const ipc = ((): { invoke<T>(controllerName: string, methodName: string, ...args: any): Promise<T> } => {
-    if (isMain()) {
-        return require('./electron-main.ipc-server').IpcServer;
-    } else {
-        return require('./electron-renderer.ipc-client').IpcClient;
-    }
-})();
+}
 
 export const preload = (): void => {
     try {

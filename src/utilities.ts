@@ -1,1 +1,1 @@
-export { ipc, isMain, preload } from './lib/electron.utilities';
+export { isMain, preload } from './lib/electron.utilities';

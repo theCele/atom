@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.IpcServer = exports.Controller = exports.Module = void 0;
+exports.IpcMainEvent = exports.IpcServer = exports.Controller = exports.Module = void 0;
 require("reflect-metadata");
 const electron_1 = require("electron");
 const controllersSignature = [];
@@ -60,6 +60,7 @@ const Injectable = () => {
             throw new Error(`Duplicate controller name ${name}`);
     };
 };
+const ipcMainEventMetadataKey = Symbol("required");
 /**
  * IPC SERVER - Method Decorator
  * Make method available in renderer
@@ -75,12 +76,19 @@ exports.IpcServer = () => {
                 events.push(listeningChannel);
             else
                 throw new Error(`duplicate event name at controller ${name} and method ${propertyKey}`);
+            let ipcMainEventParameters = Reflect.getOwnMetadata(ipcMainEventMetadataKey, target, propertyKey);
+            let ipcMainEventParametersIndex = undefined;
+            if (ipcMainEventParameters && ipcMainEventParameters.length > 0) {
+                ipcMainEventParametersIndex = ipcMainEventParameters[0];
+            }
             electron_1.ipcMain.removeHandler(listeningChannel);
             electron_1.ipcMain.handle(listeningChannel, (event, ...args) => {
                 let controller = controllers.find(c => c.constructor.name === target.constructor.name);
+                if (ipcMainEventParametersIndex)
+                    args[ipcMainEventParametersIndex] = event;
                 if (!controller)
                     throw new Error(`controller ${name} and method ${propertyKey} does not exist`);
-                return controller[propertyKey](...args, event);
+                return controller[propertyKey](...args);
             });
             electron_1.ipcMain.removeAllListeners(listeningChannel);
             electron_1.ipcMain.on(listeningChannel, (event, ...args) => {
@@ -106,6 +114,17 @@ exports.IpcServer = () => {
         else {
             throw new Error(`decorators must be in electron enviroment`);
         }
+    };
+};
+/**
+ * Parameter Decorator for IpcMainEvent
+ * Works only if used with IpcServer decorator
+ */
+exports.IpcMainEvent = () => {
+    return (target, propertyKey, parameterIndex) => {
+        let existingRequiredParameters = Reflect.getOwnMetadata(ipcMainEventMetadataKey, target, propertyKey) || [];
+        existingRequiredParameters.push(parameterIndex);
+        Reflect.defineMetadata(ipcMainEventMetadataKey, existingRequiredParameters, target, propertyKey);
     };
 };
 //# sourceMappingURL=electron-main.decorator.js.map

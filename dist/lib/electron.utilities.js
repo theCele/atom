@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.preload = exports.ipc = exports.isMain = void 0;
+exports.preload = exports.isMain = void 0;
 exports.isMain = () => {
     try {
         if (require('electron').ipcMain) {
@@ -14,14 +14,6 @@ exports.isMain = () => {
         return false;
     }
 };
-exports.ipc = (() => {
-    if (exports.isMain()) {
-        return require('./electron-main.ipc-server').IpcServer;
-    }
-    else {
-        return require('./electron-renderer.ipc-client').IpcClient;
-    }
-})();
 exports.preload = () => {
     try {
         const contextBridge = require('electron').contextBridge;

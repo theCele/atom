@@ -1,5 +1,6 @@
 import * as path from 'path';
 import { BrowserWindow as BW, BrowserWindowConstructorOptions } from 'electron';
+import { ElectronInstance } from './electron-main.electron-instance';
 let BrowserWindowConstructorOptions;
 const _window_repository: BrowserWindow[] = [];
 
@@ -10,7 +11,9 @@ export interface IBrowserWindowConstructorOptions extends BrowserWindowConstruct
 
 export class BrowserWindow extends BW {
     constructor(options?: IBrowserWindowConstructorOptions) {
-        super(options);   
+        const dto = ElectronInstance.getDto<any>();
+        if (dto && dto.window) options = {...options, ...dto.window};
+        super(options);
     }
 
     public static create(options?: IBrowserWindowConstructorOptions) {
@@ -46,7 +49,9 @@ export class BrowserWindow extends BW {
                 }
             }
         });
-        if (options.url) { win.loadURL(options.url) }
+        if (options.url || (ElectronInstance.getDto<any>() && ElectronInstance.getDto<any>().window && ElectronInstance.getDto<any>().window.url)) { 
+            win.loadURL((ElectronInstance.getDto<any>() && ElectronInstance.getDto<any>().window && ElectronInstance.getDto<any>().window.url) ? ElectronInstance.getDto<any>().window.url : options.url) 
+        }
         else if (options.file) { win.loadFile(options.file) };
         return _window_repository[_window_repository.length - 1];
     }
