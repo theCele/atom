@@ -44,13 +44,13 @@ export class IpcClient {
             this.ipc.invoke(listeningChannel, ...args)
             .then(r => {
                 // window.addEventListener("beforeunload", (e: any) => {
-                //     e.returnValue = 'true';
+                //     delete e['returnValue'];
                 // });
                 resolve(r);
             })
             .catch(err => {
                 // window.addEventListener("beforeunload", (e: any) => {
-                //     e.returnValue = true;
+                //     delete e['returnValue'];
                 // });
                 reject(err)
             });

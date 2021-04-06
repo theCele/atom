@@ -8,4 +8,6 @@ var electron_main_browser_window_1 = require("./lib/electron-main.browser-window
 Object.defineProperty(exports, "BrowserWindow", { enumerable: true, get: function () { return electron_main_browser_window_1.BrowserWindow; } });
 var electron_main_ipc_server_1 = require("./lib/electron-main.ipc-server");
 Object.defineProperty(exports, "ipc", { enumerable: true, get: function () { return electron_main_ipc_server_1.IpcServer; } });
+var electron_main_electron_instance_1 = require("./lib/electron-main.electron-instance");
+Object.defineProperty(exports, "ElectronInstance", { enumerable: true, get: function () { return electron_main_electron_instance_1.ElectronInstance; } });
 //# sourceMappingURL=index.js.map
