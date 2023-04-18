@@ -30,6 +30,25 @@ export const preload = (): void => {
             }
         );
     } catch (err) {
-        return;
+        // contextBridge API can only be used when contextIsolation is enabled
+        // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
+        // Consider using contextBridge.exposeInMainWorld
+        // Read more on https://www.electronjs.org/docs/latest/tutorial/context-isolation
+        if (err.message.includes('contextBridge API can only be used when contextIsolation is enabled')) {
+            const ipc = require('electron').ipcRenderer;
+            (window as any).ipcRenderer = {
+                invoke: (listeningChannel: string, ...args: any) : Promise<any> => {
+                    return ipc.invoke(listeningChannel, ...args);
+                },
+                send: (listeningChannel: string, ...args: any[]) => {
+                    ipc.send(listeningChannel, ...args);
+                },
+                on: (listeningChannel: string, listener: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
+                    ipc.on(listeningChannel, listener);
+                }
+            }
+        } else {
+            return;
+        }
     }
-};
+}

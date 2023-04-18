@@ -33,7 +33,27 @@ exports.preload = () => {
         });
     }
     catch (err) {
-        return;
+        // contextBridge API can only be used when contextIsolation is enabled
+        // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
+        // Consider using contextBridge.exposeInMainWorld
+        // Read more on https://www.electronjs.org/docs/latest/tutorial/context-isolation
+        if (err.message.includes('contextBridge API can only be used when contextIsolation is enabled')) {
+            const ipc = require('electron').ipcRenderer;
+            window.ipcRenderer = {
+                invoke: (listeningChannel, ...args) => {
+                    return ipc.invoke(listeningChannel, ...args);
+                },
+                send: (listeningChannel, ...args) => {
+                    ipc.send(listeningChannel, ...args);
+                },
+                on: (listeningChannel, listener) => {
+                    ipc.on(listeningChannel, listener);
+                }
+            };
+        }
+        else {
+            return;
+        }
     }
 };
 //# sourceMappingURL=electron.utilities.js.map
