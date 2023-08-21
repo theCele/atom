@@ -4,8 +4,8 @@ exports.BrowserWindow = void 0;
 const path = require("path");
 const electron_1 = require("electron");
 const electron_main_electron_instance_1 = require("./electron-main.electron-instance");
-let BrowserWindowConstructorOptions;
-const _window_repository = [];
+// let BrowserWindowConstructorOptions;
+const _window_repository = new Map();
 class BrowserWindow extends electron_1.BrowserWindow {
     constructor(options) {
         const dto = electron_main_electron_instance_1.ElectronInstance.getDto();
@@ -22,7 +22,7 @@ class BrowserWindow extends electron_1.BrowserWindow {
             const preloadOptions = {
                 webPreferences: {
                     contextIsolation: true,
-                    preload: path.join(__dirname, 'preload.js')
+                    preload: options.webPreferences ? (options.webPreferences.preload ? options.webPreferences.preload : path.join(__dirname, 'preload.js')) : path.join(__dirname, 'preload.js')
                 }
             };
             options = { ...options, ...preloadOptions };
@@ -30,22 +30,11 @@ class BrowserWindow extends electron_1.BrowserWindow {
         else {
             console.warn('nodeIntegration is enabled. If you want to use IpcClient please disable node integration');
         }
-        _window_repository.push(new BrowserWindow(options));
-        let win = _window_repository[_window_repository.length - 1];
+        const win = new BrowserWindow(options);
+        _window_repository.set(win.id, win);
         win.on('close', () => {
             if (win) {
-                const index = _window_repository.findIndex(c => {
-                    if (c) {
-                        return c.id === win.id;
-                    }
-                    else {
-                        return false;
-                    }
-                });
-                if (index) {
-                    win = undefined;
-                    _window_repository[index] = undefined;
-                }
+                _window_repository.delete(win.id);
             }
         });
         if (options.url || (electron_main_electron_instance_1.ElectronInstance.getDto() && electron_main_electron_instance_1.ElectronInstance.getDto().window && electron_main_electron_instance_1.ElectronInstance.getDto().window.url)) {
@@ -55,15 +44,13 @@ class BrowserWindow extends electron_1.BrowserWindow {
             win.loadFile(options.file);
         }
         ;
-        return _window_repository[_window_repository.length - 1];
+        return win;
     }
     static getAll() {
-        let windows = _window_repository.filter(w => {
-            if (w)
-                return true;
-            else
-                return false;
-        });
+        let windows;
+        for (const iterator of _window_repository.values()) {
+            windows.push(iterator);
+        }
         return windows;
     }
 }
