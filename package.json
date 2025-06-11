@@ -19,13 +19,12 @@
   "author": "Cvetko Stavreski",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "^9.0.4",
-    "reflect-metadata": "^0.1.13",
-    "tslint": "^6.1.2",
-    "typescript": "^3.9.5"
+    "@types/uniqid": "^5.3.4",
+    "electron": "36.4.0",
+    "reflect-metadata": "^0.2.2",
+    "typescript": "~4.5.4"
   },
   "dependencies": {
-    "@types/uniqid": "^5.2.0",
-    "uniqid": "^5.2.0"
+    "uniqid": "^5.4.0"
   }
 }
